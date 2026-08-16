@@ -32,6 +32,52 @@ sistema, *para que* eles possam se autenticar e usar as funcionalidades do seu p
 - Não é possível cadastrar dois usuários com o mesmo identificador.
 - Um usuário recém-cadastrado consegue realizar login com a senha definida.
 
+## HU04 — Cadastrar editora
+
+Como integrante da equipe da biblioteca, eu quero cadastrar as editoras, para que os
+eBooks sejam sempre associados a uma editora já conhecida, sem variações de escrita do mesmo nome.
+
+Critérios de aceitação
+- O nome da editora é obrigatório e não pode se repetir.
+- A editora cadastrada fica disponível para seleção no cadastro de eBooks.
+- Uma editora com eBooks associados não pode ser excluída.
+
+
+## HU05 — Cadastrar categoria
+
+Como integrante da equipe da biblioteca, eu quero cadastrar as categorias do acervo
+(literatura, técnico, periódico), para que os eBooks sejam classificados de forma padronizada e
+os alunos consigam filtrar o catálogo.
+
+Critérios de aceitação
+- O nome da categoria é obrigatório e não pode se repetir.
+- A categoria cadastrada fica disponível para seleção no cadastro de eBooks.
+- Uma categoria com eBooks associados não pode ser excluída.
+
+
+## HU06 — Cadastrar período de acesso
+
+Como integrante da equipe da biblioteca, eu quero cadastrar os períodos de acesso do
+semestre com data de início e fim, para que os alunos só possam alterar suas estantes dentro das
+janelas definidas pela biblioteca.
+
+Critérios de aceitação
+- Um período de acesso tem data de início e data de fim dentro do semestre.
+- Períodos de um mesmo semestre não podem se sobrepor.
+- Fora de um período vigente, adições e remoções de eBooks ficam bloqueadas.
+
+
+## HU07 — Renovar licença do eBook
+
+Como integrante da equipe da biblioteca, eu quero processar manualmente a renovação das
+licenças ao final do período de acesso, para que os títulos pouco utilizados saiam do catálogo
+e a biblioteca não mantenha licenças ociosas.
+
+Critérios de aceitação
+- A renovação é uma ação disparada pela equipe da biblioteca, disponível apenas após o encerramento do período de acesso.
+- eBooks presentes na estante de menos de 3 alunos têm a licença marcada como não renovada.
+- eBooks não renovados deixam de aparecer no catálogo do semestre seguinte.
+
 
 ## HU08 — Consultar catálogo de eBooks
 *Como* aluno ou bibliotecário, *eu quero* consultar os eBooks licenciados no semestre com título,
@@ -42,6 +88,15 @@ editora, formato e categoria, *para que* eu localize os títulos que me interess
 - É possível filtrar por categoria e buscar por título.
 - Somente eBooks com licença vigente no semestre aparecem no catálogo.
 
+## HU09 — Consultar alunos com um eBook
+
+Como bibliotecário, eu quero consultar quais alunos têm um determinado eBook em sua estante,
+para que eu acompanhe o uso do acervo e possa embasar a decisão de renovação da licença.
+
+Critérios de aceitação
+- A busca parte de um eBook do catálogo.
+- O resultado lista os alunos e o tipo de leitura (obrigatória ou livre) de cada um.
+- O total de alunos é exibido, para comparação direta com o mínimo de 3 exigido para renovação.
 
 ## HU10 — Adicionar eBook à estante
 *Como* aluno, *eu quero* adicionar um eBook do catálogo à minha estante pessoal, *para que* eu
@@ -54,6 +109,15 @@ tenha acesso ao título durante o semestre.
 - O mesmo eBook não pode ser adicionado duas vezes à mesma estante.
 - Toda adição bem-sucedida notifica o sistema de estatísticas de uso.
 
+## HU11 — Remover eBook da estante
+
+Como aluno, eu quero remover um eBook da minha estante, para que eu libere uma vaga e
+possa adicionar outro título de leitura obrigatória ou livre.
+
+Critérios de aceitação
+- A remoção só é permitida durante um período de acesso vigente.
+- Após a remoção, a vaga correspondente (obrigatória ou livre, conforme o tipo definido no cadastro do eBook) volta a ficar disponível.
+- O eBook removido deixa de ser contabilizado na contagem de alunos usada na renovação da licença.
 
 ## HU12 — Consultar estante pessoal
 *Como* aluno, *eu quero* consultar os eBooks da minha estante separados entre leitura obrigatória
@@ -74,3 +138,14 @@ dentro do limite de licenças de uso do título.
 - Com todas as 60 licenças ocupadas, o acesso é recusado com mensagem explicativa, mas o eBook permanece na estante.
 - O acesso consome uma das licenças simultâneas enquanto durar a leitura, e a licença é liberada ao encerrar (ação explícita do aluno).
 - Só é possível acessar eBooks que estejam na estante do próprio aluno.
+
+## HU14 — Notificar sistema de estatísticas
+
+Como biblioteca, eu quero que o sistema de estatísticas de uso seja notificado a cada eBook
+adicionado a uma estante, para que possamos acompanhar quais títulos são mais utilizados pelos
+alunos.
+
+Critérios de aceitação
+- A notificação é enviada automaticamente a cada adição bem-sucedida, sem ação manual.
+- A notificação identifica o eBook, o aluno e a data/hora da adição.
+- Uma falha na notificação é registrada e não impede a adição do eBook à estante.
