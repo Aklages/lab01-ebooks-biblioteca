@@ -3,8 +3,7 @@
 ' Sistema de Gestao de eBooks da Biblioteca Universitaria
 ' Diagrama de Casos de Uso - Lab01S01
 ' Fonte versionada em docs/diagramas/casos-de-uso.puml
-' Versao enxuta: 15 casos de uso (removidas validacoes internas que
-' nao sao acoes de ator - viram criterios de aceitacao das HUs)
+' Versao enxuta: 14 casos de uso
 ' =====================================================================
 
 left to right direction
@@ -20,33 +19,30 @@ rectangle "Sistema de Gestão de eBooks" {
 
   ' --- Autenticacao (Usuario) ---
   usecase "Realizar login" as UC01
-  usecase "Recuperar senha" as UC02
 
   ' --- Manutencao do acervo e dos cadastros (Equipe da Biblioteca) ---
-  usecase "Cadastrar eBook" as UC03
-  usecase "Cadastrar usuário" as UC04
-  usecase "Cadastrar editora" as UC05
-  usecase "Cadastrar categoria" as UC06
-  usecase "Cadastrar período\nde acesso" as UC07
-  usecase "Renovar licença\ndo eBook" as UC08
+  usecase "Cadastrar eBook" as UC02
+  usecase "Cadastrar usuário" as UC03
+  usecase "Cadastrar editora" as UC04
+  usecase "Cadastrar categoria" as UC05
+  usecase "Cadastrar período\nde acesso" as UC06
+  usecase "Renovar licença\ndo eBook" as UC07
 
   ' --- Consultas (Aluno e Bibliotecario) ---
-  usecase "Consultar catálogo\nde eBooks" as UC09
-  usecase "Consultar alunos\ncom um eBook" as UC10
+  usecase "Consultar catálogo\nde eBooks" as UC08
+  usecase "Consultar alunos\ncom um eBook" as UC09
 
   ' --- Estante pessoal (Aluno) ---
-  usecase "Adicionar eBook\nà estante" as UC11
-  usecase "Remover eBook\nda estante" as UC12
-  usecase "Consultar estante\npessoal" as UC13
-  usecase "Acessar eBook" as UC14
+  usecase "Adicionar eBook\nà estante" as UC10
+  usecase "Remover eBook\nda estante" as UC11
+  usecase "Consultar estante\npessoal" as UC12
+  usecase "Acessar eBook" as UC13
 
-  ' --- Notificacao ao sistema externo (unico "auxiliar" mantido,
-  ' pois representa uma interacao real com outro sistema) ---
-  usecase "Notificar sistema\nde estatísticas" as UC17
+  ' --- Notificacao ao sistema externo ---
+  usecase "Notificar sistema\nde estatísticas" as UC14
 }
 
 ' ============================== ATORES ===============================
-
 actor Usuario as "Usuário"
 actor Aluno as "Aluno"
 actor Bibliotecario as "Bibliotecário"
@@ -60,26 +56,26 @@ actor Estatisticas as "Sistema de\nEstatísticas de Uso" <<sistema externo>>
 
 ' ============================ ASSOCIACOES ============================
 Usuario --> UC01
-Usuario --> UC02
 
+Equipe --> UC02
 Equipe --> UC03
 Equipe --> UC04
 Equipe --> UC05
 Equipe --> UC06
 Equipe --> UC07
-Equipe --> UC08
 
+Bibliotecario --> UC08
 Bibliotecario --> UC09
-Bibliotecario --> UC10
 
-Aluno --> UC09
+Aluno --> UC08
+Aluno --> UC10
 Aluno --> UC11
 Aluno --> UC12
 Aluno --> UC13
-Aluno --> UC14
 
-UC17 --> Estatisticas
+UC14 --> Estatisticas
 
-UC11 ..> UC17 : <<include>>
+' ====================== INCLUSAO ==============================
+UC10 ..> UC14 : <<include>>
 
 @enduml
