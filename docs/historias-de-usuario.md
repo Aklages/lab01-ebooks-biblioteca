@@ -13,14 +13,16 @@ funcionalidades liberar para o meu perfil.
 
 ## HU02 — Cadastrar eBook
 *Como* integrante da equipe da biblioteca, *eu quero* cadastrar um eBook informando título,
-editora, formato, categoria e o tipo de leitura (obrigatória ou livre), *para que* o título
-fique disponível aos alunos já classificado corretamente para os limites da estante.
+editora, formato, categoria, o tipo de leitura (obrigatória ou livre) e o período de vigência
+da licença (data de início e data de fim), *para que* o título fique disponível aos alunos,
+já classificado corretamente para os limites da estante, apenas durante o período licenciado.
 
 *Critérios de aceitação*
-- Título, editora, formato (PDF, EPUB), categoria e tipo de leitura (obrigatória ou livre) são obrigatórios.
+- Título, editora, formato (PDF, EPUB), categoria, tipo de leitura (obrigatória ou livre) e o período de vigência da licença (data de início e data de fim) são obrigatórios.
+- A data de fim da licença deve ser posterior à data de início.
 - O limite de acessos simultâneos é fixo em 60 para todo eBook cadastrado — não é um campo configurável.
 - A editora e a categoria informadas precisam já estar cadastradas no sistema.
-- Após o cadastro, o eBook passa a aparecer no catálogo, já identificado como obrigatório ou livre.
+- Após o cadastro, o eBook passa a aparecer no catálogo dentro do período de licença informado, já identificado como obrigatório ou livre.
 
 
 ## HU03 — Cadastrar usuário
@@ -70,13 +72,13 @@ Critérios de aceitação
 ## HU07 — Renovar licença do eBook
 
 Como integrante da equipe da biblioteca, eu quero processar manualmente a renovação das
-licenças ao final do período de acesso, para que os títulos pouco utilizados saiam do catálogo
-e a biblioteca não mantenha licenças ociosas.
+licenças ao final do período de acesso, definindo a nova data de fim da licença, para que os
+títulos pouco utilizados saiam do catálogo e a biblioteca não mantenha licenças ociosas.
 
 Critérios de aceitação
-- A renovação é uma ação disparada pela equipe da biblioteca, disponível apenas após o encerramento do período de acesso.
-- eBooks presentes na estante de menos de 3 alunos têm a licença marcada como não renovada.
-- eBooks não renovados deixam de aparecer no catálogo do semestre seguinte.
+- A renovação é uma ação disparada pela equipe da biblioteca, disponível apenas após o encerramento do período de acesso, e exige informar a nova data de fim da licença.
+- eBooks presentes na estante de menos de 3 alunos não têm a data de fim da licença estendida — a renovação é recusada e a licença permanece com a data de fim já cadastrada.
+- eBooks com a data de fim da licença já vencida deixam de aparecer no catálogo do semestre seguinte.
 
 
 ## HU08 — Consultar catálogo de eBooks
@@ -86,7 +88,7 @@ editora, formato e categoria, *para que* eu localize os títulos que me interess
 *Critérios de aceitação*
 - A listagem exibe título, editora, formato e categoria.
 - É possível filtrar por categoria e buscar por título.
-- Somente eBooks com licença vigente no semestre aparecem no catálogo.
+- Somente eBooks com licença vigente no semestre (hoje entre a data de início e a data de fim da licença) aparecem no catálogo.
 
 ## HU09 — Consultar alunos com um eBook
 
