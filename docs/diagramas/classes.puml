@@ -50,8 +50,10 @@ class Ebook {
   - tipo : ETipo
   - formato : EFormato
   - acessosAtivos : int
-  - licencaRenovada : boolean
+  - dataInicioLicenca : Date
+  - dataFimLicenca : Date
   {static} LIMITE : int = 60
+  + licencaVigente() : boolean
   + retornarConteudo() : String
   + encerrarLeitura() : boolean
 }

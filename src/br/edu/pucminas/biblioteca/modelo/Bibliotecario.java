@@ -4,8 +4,15 @@ import java.util.List;
 
 public class Bibliotecario extends Usuario {
 
+    // HU08
+    public List<Ebook> consultarCatalogo(Categoria categoria, String titulo) {
+        // TODO: implementar na Sprint 3
+        return null;
+    }
+
     // HU09
     public List<Aluno> consultarAlunosComEbook(Ebook ebook) {
-
+        // TODO: implementar na Sprint 3
+        return null;
     }
 }
