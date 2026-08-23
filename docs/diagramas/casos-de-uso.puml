@@ -18,28 +18,28 @@ skinparam usecase {
 rectangle "Sistema de Gestão de eBooks" {
 
   ' --- Autenticacao (Usuario) ---
-  usecase "UC01 - Realizar login" as UC01
+  usecase "Realizar login - UC01" as UC01
 
   ' --- Manutencao do acervo e dos cadastros (Equipe da Biblioteca) ---
-  usecase "UC02 - Cadastrar eBook" as UC02
-  usecase "UC03 - Cadastrar usuário" as UC03
-  usecase "UC04 - Cadastrar editora" as UC04
-  usecase "UC05 - Cadastrar categoria" as UC05
-  usecase "UC06 - Cadastrar período\nde acesso" as UC06
-  usecase "UC07 - Renovar licença\ndo eBook" as UC07
+  usecase "Cadastrar eBook - UC02" as UC02
+  usecase "Cadastrar usuário - UC03" as UC03
+  usecase "Cadastrar editora - UC04" as UC04
+  usecase "Cadastrar categoria - UC05" as UC05
+  usecase "Cadastrar período de acesso - UC06" as UC06
+  usecase "Renovar licença do eBook - UC07" as UC07
 
   ' --- Consultas (Aluno e Bibliotecario) ---
-  usecase "UC08 - Consultar catálogo\nde eBooks" as UC08
-  usecase "UC09 - Consultar alunos\ncom um eBook" as UC09
+  usecase "Consultar catálogo de eBooks - UC08" as UC08
+  usecase "Consultar alunos com um eBook - UC09" as UC09
 
   ' --- Estante pessoal (Aluno) ---
-  usecase "UC10 - Adicionar eBook\nà estante" as UC10
-  usecase "UC11 - Remover eBook\nda estante" as UC11
-  usecase "UC12 - Consultar estante\npessoal" as UC12
-  usecase "UC13 - Acessar eBook" as UC13
+  usecase "Adicionar eBook à estante - UC10" as UC10
+  usecase "Remover eBook da estante - UC11" as UC11
+  usecase "Consultar estante pessoal - UC12" as UC12
+  usecase "Acessar eBook - UC13" as UC13
 
   ' --- Notificacao ao sistema externo ---
-  usecase "UC14 - Notificar sistema\nde estatísticas" as UC14
+  usecase "Notificar sistema de estatísticas - UC14" as UC14
 }
 
 ' ============================== ATORES ===============================
@@ -52,7 +52,7 @@ Aluno --|> Usuario
 Bibliotecario --|> Usuario
 Equipe --|> Usuario
 
-actor Estatisticas as "Sistema de\nEstatísticas de Uso" <<sistema externo>>
+actor Estatisticas as "Sistema de Estatísticas de Uso" <<sistema externo>>
 
 ' ============================ ASSOCIACOES ============================
 Usuario --> UC01

@@ -1,0 +1,121 @@
+@startuml classes_ebooks
+' =====================================================================
+' Sistema de Gestao de eBooks da Biblioteca Universitaria
+' Diagrama de Classes - Lab01S01
+' Fonte versionada em docs/diagramas/classes.puml
+' =====================================================================
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+' ============================ ATORES / USUARIOS =======================
+abstract class Usuario {
+  - matricula : String
+  - senha : String
+  + realizarLogin() : boolean
+}
+
+class Aluno {
+  - estante : Estante
+  + consultarEbooks() : Ebook[]
+  + consultarEstante() : Estante
+  + acessarEbook() : boolean
+  + adicionarEbookEstante() : boolean
+  + removerEbookEstante() : boolean
+}
+
+class Bibliotecario {
+  + consultarCatalogo() : Ebook[]
+  + consultarAlunosComEbook() : Aluno[]
+}
+
+class EquipeDaBiblioteca {
+  + cadastrarCategoria() : boolean
+  + cadastrarPeriodoDeAcesso() : boolean
+  + renovarLicenca() : boolean
+  + cadastrarEbook() : boolean
+  + cadastrarUsuario() : boolean
+  + cadastrarEditora() : boolean
+}
+
+Usuario <|-- Aluno
+Usuario <|-- Bibliotecario
+Usuario <|-- EquipeDaBiblioteca
+
+' ============================== ACERVO =================================
+class Ebook {
+  - titulo : String
+  - categoria : Categoria
+  - editora : Editora
+  - tipo : ETipo
+  - formato : EFormato
+  - acessosAtivos : int
+  - licencaRenovada : boolean
+  {static} LIMITE : int = 60
+  + retornarConteudo() : String
+  + encerrarLeitura() : boolean
+}
+
+enum ETipo {
+  livre
+  obrigatorio
+}
+
+enum EFormato {
+  PDF
+  EPUB
+}
+
+class Categoria {
+  - nome : String
+}
+
+class Editora {
+  - nome : String
+}
+
+Ebook "*" -- "1" Categoria
+Ebook "*" -- "1" Editora
+Ebook -- ETipo
+Ebook -- EFormato
+
+' ========================== PERIODO DE ACESSO ===========================
+class PeriodoDeAcesso {
+  - dataInicio : Date
+  - dataFim : Date
+  - semestre : String
+}
+
+' ============================== ESTANTE =================================
+class Estante {
+  {static} LIVRES : int = 2
+  {static} OBRIGATORIOS : int = 4
+  - ebooks : Ebook[]
+  + add() : boolean
+  + remove() : boolean
+  + vagasRestantes(tipo) : int
+  + toString() : String
+}
+
+Aluno "1" -- "1" Estante
+Estante "1" o-- "*" Ebook : ebooks
+Estante ..> PeriodoDeAcesso : valida vigencia
+
+' ============================== CATALOGO =================================
+class Catalogo {
+  - ebooks : Ebook[]
+  + filtrarPorCategoria() : Ebook[]
+  + buscarPorTitulo() : Ebook[]
+}
+
+Catalogo "1" o-- "*" Ebook : ebooks
+Catalogo ..> PeriodoDeAcesso : licenca vigente
+
+' ======================== SISTEMA EXTERNO (ESTATISTICAS) =================
+class SistemaDeEstatisticas <<external>> {
+  + notificar(ebook, aluno, dataHora) : void
+}
+
+Aluno ..> SistemaDeEstatisticas : notifica ao adicionar
+
+@enduml
