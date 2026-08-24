@@ -45,7 +45,7 @@ Usuario <|-- EquipeDaBiblioteca
 ' ============================== ACERVO =================================
 class Ebook {
   - titulo : String
-  - categoria : Categoria
+  - categoria : ECategoria
   - editora : Editora
   - tipo : ETipo
   - formato : EFormato
@@ -68,8 +68,10 @@ enum EFormato {
   EPUB
 }
 
-class Categoria {
-  - nome : String
+enum ECategoria {
+  literatura
+  tecnico
+  periodico
 }
 
 class Editora {
@@ -80,6 +82,7 @@ Ebook "*" -- "1" Categoria
 Ebook "*" -- "1" Editora
 Ebook -- ETipo
 Ebook -- EFormato
+Ebook -- ECategoria
 
 ' ========================== PERIODO DE ACESSO ===========================
 class PeriodoDeAcesso {
