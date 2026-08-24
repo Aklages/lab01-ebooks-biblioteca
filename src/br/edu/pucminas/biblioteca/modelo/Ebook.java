@@ -2,7 +2,7 @@ package br.edu.pucminas.biblioteca.modelo;
 
 import java.time.LocalDate;
 
-public class EBook {
+public class Ebook {
 
     public static final int LIMITE = 60;
 
@@ -36,4 +36,9 @@ public class EBook {
     public void liberarLicenca() {
         // TODO: implementar na Sprint 3
     }
+
+    public LocalDate getDataFimLicenca() {
+        return dataFimLicenca;
+    }
+    
 }

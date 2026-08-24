@@ -1,5 +1,6 @@
 package br.edu.pucminas.biblioteca.modelo;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Bibliotecario extends Usuario {
@@ -12,7 +13,9 @@ public class Bibliotecario extends Usuario {
 
     // HU09
     public List<Aluno> consultarAlunosComEbook(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return null;
+        Collection<Aluno> consultarAlunos = null;
+        return consultarAlunos.stream()
+                .filter(aluno -> aluno.getEstante().getEbooks().contains(ebook))
+                .toList();
     }
 }

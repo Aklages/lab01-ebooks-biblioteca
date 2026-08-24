@@ -41,4 +41,9 @@ public class Aluno extends Usuario {
     public void encerrarLeitura(Ebook ebook) {
         // TODO: implementar na Sprint 3
     }
+
+    public Estante getEstante() {
+        return estante;
+    }
+    
 }

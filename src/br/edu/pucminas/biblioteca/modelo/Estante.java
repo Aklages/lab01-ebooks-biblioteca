@@ -26,4 +26,8 @@ public class Estante {
         // TODO: implementar na Sprint 3
         return 0;
     }
+
+    public List<Ebook> getEbooks() {
+        return ebooks;
+    }
 }
