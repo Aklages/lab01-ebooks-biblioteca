@@ -103,7 +103,7 @@ class Estante {
 }
 
 Aluno "1" -- "1" Estante
-Estante "1" o-- "*" Ebook : ebooks
+Estante "1" -- "*" Ebook : ebooks
 Estante ..> PeriodoDeAcesso : valida vigencia
 
 ' ============================== CATALOGO =================================
