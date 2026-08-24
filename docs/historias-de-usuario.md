@@ -35,7 +35,6 @@ sistema, *para que* eles possam se autenticar e usar as funcionalidades do seu p
 - Um usuário recém-cadastrado consegue realizar login com a senha definida.
 
 ## HU04 — Cadastrar editora
-
 Como integrante da equipe da biblioteca, eu quero cadastrar as editoras, para que os
 eBooks sejam sempre associados a uma editora já conhecida, sem variações de escrita do mesmo nome.
 
@@ -45,20 +44,7 @@ Critérios de aceitação
 - Uma editora com eBooks associados não pode ser excluída.
 
 
-## HU05 — Cadastrar categoria
-
-Como integrante da equipe da biblioteca, eu quero cadastrar as categorias do acervo
-(literatura, técnico, periódico), para que os eBooks sejam classificados de forma padronizada e
-os alunos consigam filtrar o catálogo.
-
-Critérios de aceitação
-- O nome da categoria é obrigatório e não pode se repetir.
-- A categoria cadastrada fica disponível para seleção no cadastro de eBooks.
-- Uma categoria com eBooks associados não pode ser excluída.
-
-
 ## HU06 — Cadastrar período de acesso
-
 Como integrante da equipe da biblioteca, eu quero cadastrar os períodos de acesso do
 semestre com data de início e fim, para que os alunos só possam alterar suas estantes dentro das
 janelas definidas pela biblioteca.
