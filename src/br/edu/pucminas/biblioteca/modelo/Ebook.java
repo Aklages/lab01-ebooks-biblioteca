@@ -2,7 +2,7 @@ package br.edu.pucminas.biblioteca.modelo;
 
 import java.time.LocalDate;
 
-public class Ebook {
+public class EBook {
 
     public static final int LIMITE = 60;
 
