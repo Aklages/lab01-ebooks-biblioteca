@@ -30,7 +30,6 @@ class Bibliotecario {
 }
 
 class EquipeDaBiblioteca {
-  + cadastrarCategoria() : boolean
   + cadastrarPeriodoDeAcesso() : boolean
   + renovarLicenca() : boolean
   + cadastrarEbook() : boolean
@@ -78,7 +77,6 @@ class Editora {
   - nome : String
 }
 
-Ebook "*" -- "1" Categoria
 Ebook "*" -- "1" Editora
 Ebook -- ETipo
 Ebook -- EFormato
@@ -99,7 +97,6 @@ class Estante {
   + add() : boolean
   + remove() : boolean
   + vagasRestantes(tipo) : int
-  + toString() : String
 }
 
 Aluno "1" -- "1" Estante
