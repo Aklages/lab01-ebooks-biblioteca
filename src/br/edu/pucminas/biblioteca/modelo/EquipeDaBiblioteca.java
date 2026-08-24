@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class EquipeDaBiblioteca extends Usuario {
 
     // HU02
-    public boolean cadastrarEbook(String titulo, Editora editora, EFormato formato, Categoria categoria, ETipo tipo, LocalDate dataInicioLicenca, LocalDate dataFimLicenca) {
+    public boolean cadastrarEbook(String titulo, Editora editora, EFormato formato, ECategoria categoria, ETipo tipo, LocalDate dataInicioLicenca, LocalDate dataFimLicenca) {
         // TODO: implementar na Sprint 3
         return false;
     }

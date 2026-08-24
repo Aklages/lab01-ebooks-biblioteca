@@ -8,7 +8,7 @@ public class Aluno extends Usuario {
     private Estante estante;
 
     // HU08
-    public List<Ebook> consultarCatalogo(Categoria categoria, String titulo) {
+    public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
         // TODO: implementar na Sprint 3
         return null;
     }

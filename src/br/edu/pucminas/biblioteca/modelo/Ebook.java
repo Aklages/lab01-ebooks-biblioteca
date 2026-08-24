@@ -7,7 +7,7 @@ public class EBook {
     public static final int LIMITE = 60;
 
     private String titulo;
-    private Categoria categoria;
+    private ECategoria categoria;
     private Editora editora;
     private ETipo tipo;
     private EFormato formato;
