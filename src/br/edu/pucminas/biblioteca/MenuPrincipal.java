@@ -2,13 +2,13 @@ package br.edu.pucminas.biblioteca;
 
 import br.edu.pucminas.biblioteca.modelo.Aluno;
 import br.edu.pucminas.biblioteca.modelo.Bibliotecario;
-import br.edu.pucminas.biblioteca.modelo.EBook;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
+import br.edu.pucminas.biblioteca.modelo.Ebook;
 import br.edu.pucminas.biblioteca.modelo.Editora;
 import br.edu.pucminas.biblioteca.modelo.EquipeDaBiblioteca;
-import br.edu.pucminas.biblioteca.modelo.Estante;
-import br.edu.pucminas.biblioteca.persistencia.EBookRepositorioArquivo;
-
+import br.edu.pucminas.biblioteca.modelo.LeitorUsuarios;
+import br.edu.pucminas.biblioteca.modelo.PeriodoDeAcesso;
+import br.edu.pucminas.biblioteca.modelo.Usuario;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,10 +16,16 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class MenuPrincipal {
-    static List<Aluno> alunos = new LinkedList<>();
-    static Map<Integer, Bibliotecario> bibliotecarios = new HashMap<>();
-    static Map<Integer, EquipeDaBiblioteca> pessoasEquipe = new HashMap<>();
+    static List<Aluno> alunosCadastradosLista = new LinkedList<>();
+    static Map<String, Aluno> alunosCadastradosMap = new HashMap<>();
+    static Map<String, Bibliotecario> bibliotecariosCadastrados = new HashMap<>();
+    static Map<String, EquipeDaBiblioteca> pessoasEquipeCadastrados = new HashMap<>();
+
     static List<Editora> editoras = new LinkedList<>();
+    static List<Ebook> ebooks = new LinkedList<>();
+    static List<PeriodoDeAcesso> periodos = new LinkedList<>();
+
+    static Usuario usuarioLogado;
 
     static Scanner teclado;
 
@@ -58,66 +64,99 @@ public class MenuPrincipal {
 
     static void cabecalho() {
         limparTela();
-        System.out.println("App XGB v3\n================");
+        System.out.println("Sistema Biblioteca Xulambs\n==========================");
     }
 
     static void config(){
-        //LeitorImoveis leitorImoveis = new LeitorImoveis();
-        //imoveis = leitorImoveis.lerDados("src/contasImoveis.csv");
+        LeitorUsuarios leitorUsuarios = new LeitorUsuarios("data\\usuarios.csv");
+        alunosCadastradosMap = leitorUsuarios.lerAlunos();
+        bibliotecariosCadastrados = leitorUsuarios.lerBibliotecarios();
+        pessoasEquipeCadastrados = leitorUsuarios.lerEquipe();
     }
 
-    static int exibirMenuPrincipal(EPerfil perfil) {
+    static int exibirMenuPrincipal() {
         cabecalho();
-        System.out.println("1 - Cadastrar imóveis");
-        System.out.println("2 - Cadastrar contas e associar a um imóvel");
-        System.out.println("3 - Listar imóveis (código)");
-        System.out.println("4 - Detalhar imóveis");
-        System.out.println("=============================");
-        System.out.println("5 - Cadastrar proprietário");
-        System.out.println("6 - Associar imóvel a proprietário");
-        System.out.println("=============================");
-        System.out.println("7 - Registrar contrato de aluguel");
-        System.out.println("8 - Verificar resultados de proprietários");
-        System.out.println("0 - Finalizar");
+        switch (usuarioLogado.getPerfil()) {
+            case EPerfil.Aluno -> {
+                System.out.println("1 - Consultar Catalógo");
+                System.out.println("2 - Consultar Estante");
+                System.out.println("0 - Deslogar");
+            }
+            case EPerfil.Bibliotecario -> {
+                System.out.println("1 - Consultar Catalógo");
+                System.out.println("2 - Consultar Alunos com Ebook");
+                System.out.println("0 - Deslogar");
+            }
+            case EPerfil.EquipeDaBiblioteca -> {
+                System.out.println("1 - Cadastrar Periodo de Acesso");
+                System.out.println("2 - Renovar Licença do Ebook");
+                System.out.println("3 - Cadastrar Ebook");
+                System.out.println("4 - Cadastrar Usuario");
+                System.out.println("5 - Cadastrar Editora");
+                System.out.println("0 - Deslogar");
+            }   
+        }
         return lerInteiro("Digite sua escolha");
     }
 
-    public static void main(String[] args) {
-        Scanner leitor = new Scanner(System.in);
-        boolean continuar = true;
+    static boolean realizarLogin() {
+        boolean loginOuSenhaEhInvalido = true;
+        boolean encerrar = false;
+        int opcaoPerfil;
+        EPerfil tipoPerfil = EPerfil.Aluno;
+        String login;
+        String senha;
+        Usuario encontrado = null;
 
-        while (continuar) {
-            System.out.println("1. Adicionar eBook a estante");
-            System.out.println("2. Consultar estante");
-            System.out.println("3. Sair");
-            System.out.print("Escolha uma opcao: ");
-
-            int opcao;
-            try {
-                opcao = Integer.parseInt(leitor.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Digite um numero valido.");
-                continue;
+        cabecalho();
+        while(loginOuSenhaEhInvalido && !encerrar){
+            System.out.println("Escolha o tipo de perfil que deseja logar: ");
+            System.out.println("1 - Aluno");
+            System.out.println("2 - Bibliotecario");
+            System.out.println("3 - Equipe da bliblioteca");
+            System.out.println("0 - Encerrar");
+            opcaoPerfil = lerInteiro("Opcao");
+            switch (opcaoPerfil) {
+                case 1 -> tipoPerfil = EPerfil.Aluno;
+                case 2 -> tipoPerfil = EPerfil.Bibliotecario;
+                case 3 -> tipoPerfil = EPerfil.EquipeDaBiblioteca;
+                case 0 -> encerrar = true;
             }
-
-            try {
-                switch (opcao) {
-                    case 1:
-                        // chamar aluno.adicionarEBook(ebook)
-                        break;
-                    case 2:
-                        // chamar estante.listar()
-                        break;
-                    case 3:
-                        continuar = false;
-                        break;
-                    default:
-                        System.out.println("Opcao invalida, tente novamente.");
+            if(!encerrar){
+                login = lerString("Login");
+                senha = lerString("Senha");
+                switch (tipoPerfil) {
+                    case EPerfil.Aluno -> encontrado = alunosCadastradosMap.get(login);
+                    case EPerfil.Bibliotecario -> encontrado = bibliotecariosCadastrados.get(login);
+                    case EPerfil.EquipeDaBiblioteca -> encontrado = pessoasEquipeCadastrados.get(login);
                 }
-            } catch (IllegalStateException e) {
-                System.out.println("Nao foi possivel concluir a acao: " + e.getMessage());
+                if(encontrado == null || !encontrado.login(senha)){
+                    System.out.print("Usuario ou Senha incorreto. Tente novamente\n\n");
+                }
+                else{
+                    usuarioLogado = encontrado;
+                    loginOuSenhaEhInvalido = false;
+                }
             }
         }
-        leitor.close();
+
+        return !encerrar;
+    }
+
+    public static void main(String[] args) {
+        teclado = new Scanner(System.in);
+        
+        boolean continuar = true;
+        int opcao = 1;
+
+        config();
+
+        while(continuar){
+            continuar = realizarLogin();
+            while(opcao != 0 && continuar){
+                opcao = exibirMenuPrincipal();
+            }
+            opcao = 1;
+        }
     }
 }

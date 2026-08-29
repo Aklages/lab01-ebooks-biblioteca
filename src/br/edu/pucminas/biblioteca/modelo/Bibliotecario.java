@@ -4,6 +4,9 @@ import java.util.List;
 
 public class Bibliotecario extends Usuario {
 
+    public Bibliotecario(String matricula, String senha){
+        super(matricula, senha, EPerfil.Bibliotecario);
+    }
     // HU08
     public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
         // TODO: implementar na Sprint 3

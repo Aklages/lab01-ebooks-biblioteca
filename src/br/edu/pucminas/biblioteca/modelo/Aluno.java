@@ -7,6 +7,10 @@ public class Aluno extends Usuario {
 
     private Estante estante;
 
+    public Aluno(String matricula, String senha){
+        super(matricula, senha, EPerfil.Aluno);
+    }
+
     // HU08
     public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
         // TODO: implementar na Sprint 3
