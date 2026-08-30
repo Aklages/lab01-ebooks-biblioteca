@@ -76,6 +76,16 @@ public class Catalogo {
         return ebooks;
     }
 
+    // HU08
+    public List<Ebook> consultarCatalogo(ECategoria categoriaFiltro, String tituloBusca) {
+        return ebooks.stream()
+                .filter(Ebook::licencaVigente)
+                .filter(ebook -> categoriaFiltro == null || ebook.getCategoria() == categoriaFiltro)
+                .filter(ebook -> tituloBusca == null || tituloBusca.isBlank()
+                        || ebook.getTitulo().toLowerCase().contains(tituloBusca.toLowerCase()))
+                .toList();
+    }
+
     private void persistir(Ebook ebook) {
         try (FileWriter fw = new FileWriter(caminhoArquivo, true)) {
             if (precisaQuebrarLinhaAntesDeEscrever()) {

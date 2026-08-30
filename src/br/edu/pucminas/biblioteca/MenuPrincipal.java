@@ -2,6 +2,7 @@ package br.edu.pucminas.biblioteca;
 
 import br.edu.pucminas.biblioteca.modelo.Catalogo;
 import br.edu.pucminas.biblioteca.modelo.ECategoria;
+import br.edu.pucminas.biblioteca.modelo.Ebook;
 import br.edu.pucminas.biblioteca.modelo.EFormato;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
 import br.edu.pucminas.biblioteca.modelo.ETipo;
@@ -12,6 +13,7 @@ import br.edu.pucminas.biblioteca.modelo.Usuario;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -204,13 +206,13 @@ public class MenuPrincipal {
         switch (usuarioLogado.getPerfil()) {
             case EPerfil.Aluno -> {
                 switch (opcao) {
-                    case 1 -> System.out.print("TODO: Consultar Catalógo");
+                    case 1 -> consultarCatalogo();
                     case 2 -> System.out.print("TODO: Consultar Estante");
                 }
             }
             case EPerfil.Bibliotecario -> {
                 switch (opcao) {
-                    case 1 -> System.out.print("TODO: Consultar Catalógo");
+                    case 1 -> consultarCatalogo();
                     case 2 -> System.out.print("TODO: Consultar Alunos com Ebook");
                 }
             }
@@ -323,6 +325,41 @@ public class MenuPrincipal {
         } else {
             System.out.println("Não foi possível cadastrar o eBook. Verifique os dados informados.");
         }
+    }
+
+    static void consultarCatalogo(){
+        cabecalho();
+
+        int opcaoCategoria = -1;
+        while (opcaoCategoria < 0 || opcaoCategoria > 3) {
+            System.out.println("0 - Todas");
+            System.out.println("1 - Literatura");
+            System.out.println("2 - Tecnico");
+            System.out.println("3 - Periodico");
+            opcaoCategoria = lerInteiro("Categoria");
+        }
+        ECategoria categoria = switch (opcaoCategoria) {
+            case 1 -> ECategoria.literatura;
+            case 2 -> ECategoria.tecnico;
+            case 3 -> ECategoria.periodico;
+            default -> null;
+        };
+
+        String tituloBusca = lerString("Buscar por titulo (deixe em branco para nao filtrar)");
+
+        List<Ebook> resultado = catalogo.consultarCatalogo(categoria, tituloBusca);
+
+        cabecalho();
+        if (resultado.isEmpty()) {
+            System.out.println("Nenhum eBook encontrado no catálogo.");
+        } else {
+            for (Ebook ebook : resultado) {
+                System.out.println(ebook.getTitulo() + " | " + ebook.getEditora().getNome() + " | "
+                        + ebook.getFormato() + " | " + ebook.getCategoria());
+            }
+        }
+
+        pausa();
     }
 
     public static void main(String[] args) {

@@ -57,8 +57,8 @@ public class Ebook {
 
     // HU08
     public boolean licencaVigente() {
-        // TODO: implementar na Sprint 3
-        return false;
+        LocalDate hoje = LocalDate.now();
+        return !hoje.isBefore(dataInicioLicenca) && !hoje.isAfter(dataFimLicenca);
     }
 
     // HU13
