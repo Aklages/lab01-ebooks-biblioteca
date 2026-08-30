@@ -3,10 +3,10 @@ package br.edu.pucminas.biblioteca;
 import br.edu.pucminas.biblioteca.modelo.Aluno;
 import br.edu.pucminas.biblioteca.modelo.Catalogo;
 import br.edu.pucminas.biblioteca.modelo.ECategoria;
-import br.edu.pucminas.biblioteca.modelo.Ebook;
 import br.edu.pucminas.biblioteca.modelo.EFormato;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
 import br.edu.pucminas.biblioteca.modelo.ETipo;
+import br.edu.pucminas.biblioteca.modelo.Ebook;
 import br.edu.pucminas.biblioteca.modelo.Editora;
 import br.edu.pucminas.biblioteca.modelo.Estante;
 import br.edu.pucminas.biblioteca.modelo.RepositorioEditoras;
@@ -32,6 +32,20 @@ public class MenuPrincipal {
     static Usuario usuarioLogado;
 
     static Scanner teclado;
+
+    static final String CONTEUDO_LEITURA = """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+            veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+            """;
 
     static int lerInteiro(String mensagem) {
         System.out.print(mensagem + ": ");
@@ -188,8 +202,9 @@ public class MenuPrincipal {
                     System.out.println("1 - Consultar Catalógo");
                     System.out.println("2 - Consultar Estante");
                     System.out.println("3 - Adicionar eBook à Estante");
+                    System.out.println("4 - Acessar eBook");
                     System.out.println("0 - Deslogar");
-                    numOpcoes = 3;
+                    numOpcoes = 4;
                 }
                 case EPerfil.Bibliotecario -> {
                     System.out.println("1 - Consultar Catalógo");
@@ -219,6 +234,7 @@ public class MenuPrincipal {
                     case 1 -> consultarCatalogo();
                     case 2 -> consultarEstante();
                     case 3 -> adicionarEbookEstante();
+                    case 4 -> acessarEbook();
                 }
             }
             case EPerfil.Bibliotecario -> {
@@ -455,6 +471,65 @@ public class MenuPrincipal {
         }
 
         pausa();
+    }
+
+    static void acessarEbook(){
+        cabecalho();
+
+        Aluno aluno = (Aluno) usuarioLogado;
+        Estante estante = aluno.getEstante();
+        Map<ETipo, List<Ebook>> ebooksPorTipo = estante.consultar();
+
+        boolean estanteVazia = ebooksPorTipo.values().stream().allMatch(List::isEmpty);
+        if (estanteVazia) {
+            System.out.println("Sua estante está vazia.");
+            pausa();
+            return;
+        }
+
+        for (List<Ebook> ebooksDoTipo : ebooksPorTipo.values()) {
+            for (Ebook ebook : ebooksDoTipo) {
+                System.out.println(ebook.getTitulo() + " | " + ebook.getEditora().getNome() + " | "
+                        + ebook.getFormato() + " | " + ebook.getTipo());
+            }
+        }
+
+        String tituloEscolhido = lerString("Titulo do eBook que deseja acessar (deixe em branco para cancelar)");
+        if (tituloEscolhido.isBlank()) {
+            return;
+        }
+
+        Ebook ebook = catalogo.buscarPorTitulo(tituloEscolhido);
+        if (ebook == null || !estante.contem(ebook)) {
+            System.out.println("Este eBook não está na sua estante.");
+            pausa();
+            return;
+        }
+
+        if (!ebook.possuiLicencaDisponivel()) {
+            System.out.println("Todas as licenças de uso simultâneo deste eBook estão ocupadas. Tente novamente mais tarde.");
+            pausa();
+            return;
+        }
+
+        if (!aluno.acessarEbook(ebook)) {
+            System.out.println("Não foi possível acessar o eBook.");
+            pausa();
+            return;
+        }
+
+        lerEbook(ebook);
+
+        aluno.encerrarLeitura(ebook);
+    }
+
+    static void lerEbook(Ebook ebook){
+        cabecalho();
+        System.out.println(ebook.getTitulo() + " | " + ebook.getEditora().getNome());
+        System.out.println("==========================\n");
+        System.out.println(CONTEUDO_LEITURA);
+        System.out.println("Tecle Enter para fechar o eBook.");
+        teclado.nextLine();
     }
 
     public static void main(String[] args) {

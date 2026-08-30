@@ -51,12 +51,18 @@ public class Aluno extends Usuario {
 
     // HU13
     public boolean acessarEbook(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+        if (ebook == null || !estante.contem(ebook) || !ebook.possuiLicencaDisponivel()) {
+            return false;
+        }
+
+        ebook.ocuparLicenca();
+        return true;
     }
 
     // HU13
     public void encerrarLeitura(Ebook ebook) {
-        // TODO: implementar na Sprint 3
+        if (ebook != null) {
+            ebook.liberarLicenca();
+        }
     }
 }

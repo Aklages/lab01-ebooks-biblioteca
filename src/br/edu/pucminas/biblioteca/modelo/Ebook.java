@@ -63,17 +63,18 @@ public class Ebook {
 
     // HU13
     public boolean possuiLicencaDisponivel() {
-        // TODO: implementar na Sprint 3
-        return false;
+        return acessosAtivos < LIMITE;
     }
 
     // HU13
     public void ocuparLicenca() {
-        // TODO: implementar na Sprint 3
+        acessosAtivos++;
     }
 
     // HU13
     public void liberarLicenca() {
-        // TODO: implementar na Sprint 3
+        if (acessosAtivos > 0) {
+            acessosAtivos--;
+        }
     }
 }
