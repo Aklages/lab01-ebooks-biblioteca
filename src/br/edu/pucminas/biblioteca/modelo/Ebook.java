@@ -77,4 +77,9 @@ public class Ebook {
             acessosAtivos--;
         }
     }
+
+    // HU07
+    public void renovarLicenca(LocalDate novaDataFimLicenca) {
+        this.dataFimLicenca = novaDataFimLicenca;
+    }
 }

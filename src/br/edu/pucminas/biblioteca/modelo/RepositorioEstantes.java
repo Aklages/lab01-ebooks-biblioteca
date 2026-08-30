@@ -55,6 +55,27 @@ public class RepositorioEstantes {
         return adicionado;
     }
 
+    // HU11
+    public boolean remover(Aluno aluno, Ebook ebook, boolean periodoDeAcessoVigente) {
+        boolean removido = aluno.removerEbookEstante(ebook, periodoDeAcessoVigente);
+        if (removido) {
+            reescrever();
+        }
+        return removido;
+    }
+
+    private void reescrever() {
+        try (FileWriter fw = new FileWriter(caminhoArquivo, false)) {
+            for (Aluno aluno : repositorioUsuarios.getAlunos().values()) {
+                for (Ebook ebook : aluno.getEstante().getEbooks()) {
+                    fw.write(aluno.getMatricula() + ";" + ebook.getTitulo() + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar estante: " + e.getMessage());
+        }
+    }
+
     private void persistir(Aluno aluno, Ebook ebook) {
         try (FileWriter fw = new FileWriter(caminhoArquivo, true)) {
             if (precisaQuebrarLinhaAntesDeEscrever()) {

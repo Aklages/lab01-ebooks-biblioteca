@@ -34,21 +34,23 @@ public class Catalogo {
                     continue;
                 }
 
-                String[] dados = linha.split(";");
-                String titulo = dados[0];
-                ECategoria categoria = ECategoria.valueOf(dados[1]);
-                Editora editora = repositorioEditoras.buscar(dados[2]);
-                ETipo tipo = ETipo.valueOf(dados[3]);
-                EFormato formato = EFormato.valueOf(dados[4]);
-                LocalDate dataInicioLicenca = LocalDate.parse(dados[5]);
-                LocalDate dataFimLicenca = LocalDate.parse(dados[6]);
+                try {
+                    String[] dados = linha.split(";");
+                    String titulo = dados[0];
+                    ECategoria categoria = ECategoria.valueOf(dados[1]);
+                    Editora editora = repositorioEditoras.buscar(dados[2]);
+                    ETipo tipo = ETipo.valueOf(dados[3]);
+                    EFormato formato = EFormato.valueOf(dados[4]);
+                    LocalDate dataInicioLicenca = LocalDate.parse(dados[5]);
+                    LocalDate dataFimLicenca = LocalDate.parse(dados[6]);
 
-                ebooks.add(new Ebook(titulo, categoria, editora, tipo, formato, dataInicioLicenca, dataFimLicenca));
+                    ebooks.add(new Ebook(titulo, categoria, editora, tipo, formato, dataInicioLicenca, dataFimLicenca));
+                } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Linha ignorada em " + caminhoArquivo + ": " + linha);
+                }
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Erro ao converter dado do ebook: " + e.getMessage());
         }
     }
 
@@ -91,6 +93,19 @@ public class Catalogo {
                 .filter(ebook -> tituloBusca == null || tituloBusca.isBlank()
                         || ebook.getTitulo().toLowerCase().contains(tituloBusca.toLowerCase()))
                 .toList();
+    }
+
+    // HU07
+    public void salvar() {
+        try (FileWriter fw = new FileWriter(caminhoArquivo, false)) {
+            for (Ebook ebook : ebooks) {
+                fw.write(ebook.getTitulo() + ";" + ebook.getCategoria() + ";" + ebook.getEditora().getNome() + ";"
+                        + ebook.getTipo() + ";" + ebook.getFormato() + ";" + ebook.getDataInicioLicenca() + ";"
+                        + ebook.getDataFimLicenca() + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar ebook: " + e.getMessage());
+        }
     }
 
     private void persistir(Ebook ebook) {

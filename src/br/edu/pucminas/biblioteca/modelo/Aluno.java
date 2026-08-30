@@ -18,9 +18,12 @@ public class Aluno extends Usuario {
     }
 
     // HU08
-    public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
-        // TODO: implementar na Sprint 3
-        return null;
+    public List<Ebook> consultarCatalogo(Catalogo catalogo, ECategoria categoria, String titulo) {
+        if (catalogo == null) {
+            return List.of();
+        }
+
+        return catalogo.consultarCatalogo(categoria, titulo);
     }
 
     // HU10
@@ -31,22 +34,28 @@ public class Aluno extends Usuario {
 
         boolean adicionado = estante.add(ebook);
         if (adicionado) {
-            sistemaDeEstatisticas.notificar(ebook, this, LocalDateTime.now());
+            try {
+                sistemaDeEstatisticas.notificar(ebook, this, LocalDateTime.now());
+            } catch (RuntimeException e) {
+                System.err.println("Falha ao notificar o sistema de estatisticas: " + e.getMessage());
+            }
         }
 
         return adicionado;
     }
 
     // HU11
-    public boolean removerEbookEstante(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+    public boolean removerEbookEstante(Ebook ebook, boolean periodoDeAcessoVigente) {
+        if (!periodoDeAcessoVigente) {
+            return false;
+        }
+
+        return estante.remove(ebook);
     }
 
     // HU12
     public Map<ETipo, List<Ebook>> consultarEstante() {
-        // TODO: implementar na Sprint 3
-        return null;
+        return estante.consultar();
     }
 
     // HU13

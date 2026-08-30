@@ -33,8 +33,7 @@ public class Estante {
 
     // HU11
     public boolean remove(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+        return ebook != null && ebooks.remove(ebook);
     }
 
     // HU11
@@ -59,5 +58,9 @@ public class Estante {
     // Usado pelo RepositorioEstantes para restaurar a estante persistida, sem passar pelas validações da HU10
     void carregarEbook(Ebook ebook) {
         ebooks.add(ebook);
+    }
+
+    public List<Ebook> getEbooks() {
+        return ebooks;
     }
 }
