@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RepositorioEditoras {
 
@@ -45,5 +46,12 @@ public class RepositorioEditoras {
 
     public boolean existeEditora(String nome) {
         return editoras.containsKey(nome);
+    }
+
+    @Override
+    public String toString() {
+        return editoras.values().stream()
+            .map(Editora::getNome)
+            .collect(Collectors.joining("\n"));
     }
 }

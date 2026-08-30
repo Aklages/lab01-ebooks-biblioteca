@@ -6,15 +6,12 @@ import br.edu.pucminas.biblioteca.modelo.EFormato;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
 import br.edu.pucminas.biblioteca.modelo.ETipo;
 import br.edu.pucminas.biblioteca.modelo.Editora;
-import br.edu.pucminas.biblioteca.modelo.PeriodoDeAcesso;
 import br.edu.pucminas.biblioteca.modelo.RepositorioEditoras;
 import br.edu.pucminas.biblioteca.modelo.RepositorioUsuarios;
 import br.edu.pucminas.biblioteca.modelo.Usuario;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -22,7 +19,6 @@ public class MenuPrincipal {
     static RepositorioEditoras repositorioEditoras = new RepositorioEditoras("data\\editoras.csv");
 
     static Catalogo catalogo = new Catalogo();
-    static List<PeriodoDeAcesso> periodos = new LinkedList<>();
 
     static Usuario usuarioLogado;
 
@@ -248,7 +244,7 @@ public class MenuPrincipal {
 
         while(duplicado){
             matricula = lerString("Matricula");
-            if(repositorioUsuarios.existeMatricula(matricula))
+            if(repositorioUsuarios.existeMatricula(perfil, matricula))
                 System.out.println("Matricula duplicada.");
             else
                 duplicado = false;
@@ -267,11 +263,20 @@ public class MenuPrincipal {
 
         String titulo = lerString("Titulo");
 
-        String nomeEditora = lerString("Editora");
-        Editora editora = repositorioEditoras.buscar(nomeEditora);
-        if (editora == null) {
-            System.out.println("Editora não cadastrada.");
-            return;
+        String nomeEditora;
+        Editora editora = null;
+
+        while(editora == null){
+            nomeEditora = lerString("Editora");
+            if(nomeEditora.equals("0"))
+                return;
+            editora = repositorioEditoras.buscar(nomeEditora);
+            if (editora == null) {
+                System.out.println("Editora não cadastrada.");
+                System.out.println("Editoras cadastradas:");
+                System.out.println(repositorioEditoras.toString());
+                System.out.println("(digite 0 para sair)");
+            }
         }
 
         int opcaoFormato = -1;
@@ -305,6 +310,12 @@ public class MenuPrincipal {
 
         LocalDate dataInicio = lerData("Data de inicio da licenca");
         LocalDate dataFim = lerData("Data de fim da licenca");
+
+        while(dataInicio == null || dataFim == null || dataInicio.isAfter(dataFim)){
+            System.out.println("Data de inicio ou Data de fim da licencao não pode ser nulo.\nData de inicio não pode ser posterior a Data de fim.");
+            dataInicio = lerData("Data de inicio da licenca");
+            dataFim = lerData("Data de fim da licenca");
+        }
 
         if (catalogo.cadastrarEbook(titulo, editora, formato, categoria, tipo, dataInicio, dataFim)) {
             System.out.println("Ebook cadastrado com sucesso.");

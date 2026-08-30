@@ -72,15 +72,17 @@ public class RepositorioUsuarios {
         };
     }
 
-    public boolean existeMatricula(String matricula) {
-        return alunos.containsKey(matricula)
-                || bibliotecarios.containsKey(matricula)
-                || equipe.containsKey(matricula);
+    public boolean existeMatricula(EPerfil perfil, String matricula) {
+        return switch(perfil) {
+            case Aluno -> alunos.containsKey(matricula);
+            case Bibliotecario -> bibliotecarios.containsKey(matricula);
+            case EquipeDaBiblioteca -> equipe.containsKey(matricula);
+        };
     }
 
     // HU03
     public boolean cadastrarAluno(String matricula, String senha) {
-        if (existeMatricula(matricula)) {
+        if (existeMatricula(EPerfil.Aluno, matricula)) {
             return false;
         }
 
@@ -91,7 +93,7 @@ public class RepositorioUsuarios {
 
     // HU03
     public boolean cadastrarBibliotecario(String matricula, String senha) {
-        if (existeMatricula(matricula)) {
+        if (existeMatricula(EPerfil.Bibliotecario, matricula)) {
             return false;
         }
 
