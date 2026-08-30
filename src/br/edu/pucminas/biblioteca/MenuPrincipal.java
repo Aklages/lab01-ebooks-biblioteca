@@ -1,25 +1,17 @@
 package br.edu.pucminas.biblioteca;
 
-import br.edu.pucminas.biblioteca.modelo.Aluno;
-import br.edu.pucminas.biblioteca.modelo.Bibliotecario;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
 import br.edu.pucminas.biblioteca.modelo.Ebook;
 import br.edu.pucminas.biblioteca.modelo.Editora;
-import br.edu.pucminas.biblioteca.modelo.EquipeDaBiblioteca;
-import br.edu.pucminas.biblioteca.modelo.LeitorUsuarios;
 import br.edu.pucminas.biblioteca.modelo.PeriodoDeAcesso;
+import br.edu.pucminas.biblioteca.modelo.RepositorioUsuarios;
 import br.edu.pucminas.biblioteca.modelo.Usuario;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class MenuPrincipal {
-    static List<Aluno> alunosCadastradosLista = new LinkedList<>();
-    static Map<String, Aluno> alunosCadastradosMap = new HashMap<>();
-    static Map<String, Bibliotecario> bibliotecariosCadastrados = new HashMap<>();
-    static Map<String, EquipeDaBiblioteca> pessoasEquipeCadastrados = new HashMap<>();
+    static RepositorioUsuarios repositorioUsuarios = new RepositorioUsuarios("data\\usuarios.csv");
 
     static List<Editora> editoras = new LinkedList<>();
     static List<Ebook> ebooks = new LinkedList<>();
@@ -68,10 +60,7 @@ public class MenuPrincipal {
     }
 
     static void config(){
-        LeitorUsuarios leitorUsuarios = new LeitorUsuarios("data\\usuarios.csv");
-        alunosCadastradosMap = leitorUsuarios.lerAlunos();
-        bibliotecariosCadastrados = leitorUsuarios.lerBibliotecarios();
-        pessoasEquipeCadastrados = leitorUsuarios.lerEquipe();
+        repositorioUsuarios.carregar();
     }
 
     static int exibirMenuPrincipal(){
@@ -149,11 +138,7 @@ public class MenuPrincipal {
             login = lerString("Login");
             senha = lerString("Senha");
             
-            switch (tipoPerfil) {
-                case EPerfil.Aluno -> encontrado = alunosCadastradosMap.get(login);
-                case EPerfil.Bibliotecario -> encontrado = bibliotecariosCadastrados.get(login);
-                case EPerfil.EquipeDaBiblioteca -> encontrado = pessoasEquipeCadastrados.get(login);
-            }
+            encontrado = repositorioUsuarios.buscar(tipoPerfil, login);
 
             if(encontrado == null || !encontrado.login(senha)){
                 System.out.print("Usuario ou Senha incorreto. Tente novamente\n\n");
@@ -217,13 +202,46 @@ public class MenuPrincipal {
             }
             case EPerfil.EquipeDaBiblioteca -> {
                 switch (opcao) {
-                    case 1 -> System.out.println("TODO: Cadastrar Usuario");
+                    case 1 -> cadastrarUsuario();
                     case 2 -> System.out.println("TODO: Cadastrar Ebook");
                     case 3 -> System.out.println("TODO: Cadastrar Editora");
                     case 4 -> System.out.println("TODO: Renovar Licença do Ebook");
                     case 5 -> System.out.println("TODO: Cadastrar Periodo de Acesso");
                 }
             }
+        }
+    }
+
+    static void cadastrarUsuario(){
+        int opcao = -1;
+        boolean duplicado = true;
+
+        cabecalho();
+        while (opcao < 0 || opcao > 2) { 
+            System.out.println("Escolha o tipo de perfil que deseja cadstrar: ");
+            System.out.println("1 - Aluno");
+            System.out.println("2 - Bibliotecario");
+            System.out.println("0 - Voltar");
+            opcao = lerInteiro("Opcao");
+        }
+
+        EPerfil perfil = mapearIdentificadorParaPerfil(opcao);
+
+        String matricula = null;
+
+        while(duplicado){
+            matricula = lerString("Matricula");
+            if(repositorioUsuarios.existeMatricula(matricula))
+                System.out.println("Matricula duplicada.");
+            else
+                duplicado = false;
+        }
+
+        String senha = lerString("Senha");
+
+        switch (perfil) {
+            case EPerfil.Aluno -> repositorioUsuarios.cadastrarAluno(matricula, senha);
+            case EPerfil.Bibliotecario -> repositorioUsuarios.cadastrarBibliotecario(matricula, senha);
         }
     }
 
