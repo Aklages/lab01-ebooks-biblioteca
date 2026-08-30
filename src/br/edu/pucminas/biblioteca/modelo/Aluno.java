@@ -18,9 +18,12 @@ public class Aluno extends Usuario {
     }
 
     // HU08
-    public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
-        // TODO: implementar na Sprint 3
-        return null;
+    public List<Ebook> consultarCatalogo(Catalogo catalogo, ECategoria categoria, String titulo) {
+        if (catalogo == null) {
+            return List.of();
+        }
+
+        return catalogo.consultarCatalogo(categoria, titulo);
     }
 
     // HU10
@@ -52,8 +55,7 @@ public class Aluno extends Usuario {
 
     // HU12
     public Map<ETipo, List<Ebook>> consultarEstante() {
-        // TODO: implementar na Sprint 3
-        return null;
+        return estante.consultar();
     }
 
     // HU13

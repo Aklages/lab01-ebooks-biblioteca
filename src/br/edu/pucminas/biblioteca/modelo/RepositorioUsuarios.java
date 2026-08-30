@@ -34,21 +34,23 @@ public class RepositorioUsuarios {
                     continue;
                 }
 
-                String[] dados = linha.split(";");
-                int perfil = Integer.parseInt(dados[0]);
-                String matricula = dados[1];
-                String senha = dados[2];
+                try {
+                    String[] dados = linha.split(";");
+                    int perfil = Integer.parseInt(dados[0]);
+                    String matricula = dados[1];
+                    String senha = dados[2];
 
-                switch (perfil) {
-                    case 1 -> alunos.put(matricula, new Aluno(matricula, senha));
-                    case 2 -> bibliotecarios.put(matricula, new Bibliotecario(matricula, senha));
-                    case 3 -> equipe.put(matricula, new EquipeDaBiblioteca(matricula, senha));
+                    switch (perfil) {
+                        case 1 -> alunos.put(matricula, new Aluno(matricula, senha));
+                        case 2 -> bibliotecarios.put(matricula, new Bibliotecario(matricula, senha));
+                        case 3 -> equipe.put(matricula, new EquipeDaBiblioteca(matricula, senha));
+                    }
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Linha ignorada em " + caminhoArquivo + ": " + linha);
                 }
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Erro ao converter número: " + e.getMessage());
         }
     }
 
@@ -99,6 +101,17 @@ public class RepositorioUsuarios {
 
         bibliotecarios.put(matricula, new Bibliotecario(matricula, senha));
         persistir(2, matricula, senha);
+        return true;
+    }
+
+    // HU03
+    public boolean cadastrarEquipe(String matricula, String senha) {
+        if (existeMatricula(EPerfil.EquipeDaBiblioteca, matricula)) {
+            return false;
+        }
+
+        equipe.put(matricula, new EquipeDaBiblioteca(matricula, senha));
+        persistir(3, matricula, senha);
         return true;
     }
 

@@ -9,9 +9,12 @@ public class Bibliotecario extends Usuario {
         super(matricula, senha, EPerfil.Bibliotecario);
     }
     // HU08
-    public List<Ebook> consultarCatalogo(ECategoria categoria, String titulo) {
-        // TODO: implementar na Sprint 3
-        return null;
+    public List<Ebook> consultarCatalogo(Catalogo catalogo, ECategoria categoria, String titulo) {
+        if (catalogo == null) {
+            return List.of();
+        }
+
+        return catalogo.consultarCatalogo(categoria, titulo);
     }
 
     // HU09

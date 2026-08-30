@@ -31,17 +31,19 @@ public class RepositorioPeriodoDeAcesso {
                     continue;
                 }
 
-                String[] dados = linha.split(";");
-                String semestre = dados[0];
-                LocalDate dataInicio = LocalDate.parse(dados[1]);
-                LocalDate dataFim = LocalDate.parse(dados[2]);
+                try {
+                    String[] dados = linha.split(";");
+                    String semestre = dados[0];
+                    LocalDate dataInicio = LocalDate.parse(dados[1]);
+                    LocalDate dataFim = LocalDate.parse(dados[2]);
 
-                periodos.add(new PeriodoDeAcesso(semestre, dataInicio, dataFim));
+                    periodos.add(new PeriodoDeAcesso(semestre, dataInicio, dataFim));
+                } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Linha ignorada em " + caminhoArquivo + ": " + linha);
+                }
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Erro ao converter dado do periodo de acesso: " + e.getMessage());
         }
     }
 

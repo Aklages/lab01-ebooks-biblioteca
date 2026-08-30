@@ -11,15 +11,32 @@ public class EquipeDaBiblioteca extends Usuario {
         super(matricula, senha, EPerfil.EquipeDaBiblioteca);
     }
     // HU02
-    public boolean cadastrarEbook(String titulo, Editora editora, EFormato formato, ECategoria categoria, ETipo tipo, LocalDate dataInicioLicenca, LocalDate dataFimLicenca) {
-        // TODO: implementar na Sprint 3
-        return false;
+    public boolean cadastrarEbook(String titulo, Editora editora, EFormato formato, ECategoria categoria, ETipo tipo, LocalDate dataInicioLicenca, LocalDate dataFimLicenca, Catalogo catalogo, RepositorioEditoras repositorioEditoras) {
+        if (catalogo == null
+                || repositorioEditoras == null
+                || editora == null
+                || categoria == null
+                || !repositorioEditoras.existeEditora(editora.getNome())) {
+            return false;
+        }
+
+        return catalogo.cadastrarEbook(titulo, editora, formato, categoria, tipo, dataInicioLicenca, dataFimLicenca);
     }
 
     // HU03
-    public boolean cadastrarUsuario(String matricula, String senha, String perfil) {
-        // TODO: implementar na Sprint 3
-        return false;
+    public boolean cadastrarUsuario(String matricula, String senha, EPerfil perfil, RepositorioUsuarios repositorioUsuarios) {
+        if (repositorioUsuarios == null
+                || perfil == null
+                || matricula == null || matricula.isBlank()
+                || senha == null || senha.isBlank()) {
+            return false;
+        }
+
+        return switch (perfil) {
+            case Aluno -> repositorioUsuarios.cadastrarAluno(matricula, senha);
+            case Bibliotecario -> repositorioUsuarios.cadastrarBibliotecario(matricula, senha);
+            case EquipeDaBiblioteca -> repositorioUsuarios.cadastrarEquipe(matricula, senha);
+        };
     }
 
 
