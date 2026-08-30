@@ -1,5 +1,6 @@
 package br.edu.pucminas.biblioteca;
 
+import br.edu.pucminas.biblioteca.modelo.Aluno;
 import br.edu.pucminas.biblioteca.modelo.Catalogo;
 import br.edu.pucminas.biblioteca.modelo.ECategoria;
 import br.edu.pucminas.biblioteca.modelo.Ebook;
@@ -7,13 +8,17 @@ import br.edu.pucminas.biblioteca.modelo.EFormato;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
 import br.edu.pucminas.biblioteca.modelo.ETipo;
 import br.edu.pucminas.biblioteca.modelo.Editora;
+import br.edu.pucminas.biblioteca.modelo.Estante;
 import br.edu.pucminas.biblioteca.modelo.RepositorioEditoras;
+import br.edu.pucminas.biblioteca.modelo.RepositorioEstantes;
+import br.edu.pucminas.biblioteca.modelo.RepositorioPeriodoDeAcesso;
 import br.edu.pucminas.biblioteca.modelo.RepositorioUsuarios;
 import br.edu.pucminas.biblioteca.modelo.Usuario;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -21,6 +26,8 @@ public class MenuPrincipal {
     static RepositorioEditoras repositorioEditoras = new RepositorioEditoras("data\\editoras.csv");
 
     static Catalogo catalogo = new Catalogo("data\\ebooks.csv", repositorioEditoras);
+    static RepositorioEstantes repositorioEstantes = new RepositorioEstantes("data\\estantes.csv", repositorioUsuarios, catalogo);
+    static RepositorioPeriodoDeAcesso repositorioPeriodoDeAcesso = new RepositorioPeriodoDeAcesso("data\\periodos.csv");
 
     static Usuario usuarioLogado;
 
@@ -77,6 +84,8 @@ public class MenuPrincipal {
         repositorioUsuarios.carregar();
         repositorioEditoras.carregar();
         catalogo.carregar();
+        repositorioEstantes.carregar();
+        repositorioPeriodoDeAcesso.carregar();
     }
 
     static int exibirMenuPrincipal(){
@@ -178,8 +187,9 @@ public class MenuPrincipal {
                 case EPerfil.Aluno -> {
                     System.out.println("1 - Consultar Catalógo");
                     System.out.println("2 - Consultar Estante");
+                    System.out.println("3 - Adicionar eBook à Estante");
                     System.out.println("0 - Deslogar");
-                    numOpcoes = 2;
+                    numOpcoes = 3;
                 }
                 case EPerfil.Bibliotecario -> {
                     System.out.println("1 - Consultar Catalógo");
@@ -207,7 +217,8 @@ public class MenuPrincipal {
             case EPerfil.Aluno -> {
                 switch (opcao) {
                     case 1 -> consultarCatalogo();
-                    case 2 -> System.out.print("TODO: Consultar Estante");
+                    case 2 -> consultarEstante();
+                    case 3 -> adicionarEbookEstante();
                 }
             }
             case EPerfil.Bibliotecario -> {
@@ -357,6 +368,90 @@ public class MenuPrincipal {
                 System.out.println(ebook.getTitulo() + " | " + ebook.getEditora().getNome() + " | "
                         + ebook.getFormato() + " | " + ebook.getCategoria());
             }
+        }
+
+        pausa();
+    }
+
+    static void consultarEstante(){
+        cabecalho();
+
+        Aluno aluno = (Aluno) usuarioLogado;
+        Estante estante = aluno.getEstante();
+        Map<ETipo, List<Ebook>> ebooksPorTipo = estante.consultar();
+
+        for (ETipo tipo : ETipo.values()) {
+            int limite = tipo == ETipo.OBRIGATORIO ? Estante.OBRIGATORIOS : Estante.LIVRES;
+            int vagasRestantes = estante.vagasRestantes(tipo);
+            List<Ebook> ebooksDoTipo = ebooksPorTipo.get(tipo);
+
+            System.out.println(tipo + " (" + (limite - vagasRestantes) + " de " + limite + "):");
+            if (ebooksDoTipo.isEmpty()) {
+                System.out.println("  Nenhum eBook adicionado.");
+            } else {
+                for (Ebook ebook : ebooksDoTipo) {
+                    System.out.println("  " + ebook.getTitulo() + " | " + ebook.getEditora().getNome() + " | "
+                            + ebook.getFormato());
+                }
+            }
+        }
+
+        pausa();
+    }
+
+    static void adicionarEbookEstante(){
+        cabecalho();
+
+        Aluno aluno = (Aluno) usuarioLogado;
+
+        List<Ebook> ebooksDisponiveis = catalogo.consultarCatalogo(null, null);
+        if (ebooksDisponiveis.isEmpty()) {
+            System.out.println("Nenhum eBook disponível no catálogo.");
+            pausa();
+            return;
+        }
+
+        for (Ebook ebook : ebooksDisponiveis) {
+            System.out.println(ebook.getTitulo() + " | " + ebook.getEditora().getNome() + " | "
+                    + ebook.getFormato() + " | " + ebook.getCategoria() + " | " + ebook.getTipo());
+        }
+
+        String tituloEscolhido = lerString("Titulo do eBook (deixe em branco para cancelar)");
+        if (tituloEscolhido.isBlank()) {
+            return;
+        }
+
+        Ebook ebook = catalogo.buscarPorTitulo(tituloEscolhido);
+        if (ebook == null || !ebook.licencaVigente()) {
+            System.out.println("eBook não encontrado no catálogo.");
+            pausa();
+            return;
+        }
+
+        boolean periodoVigente = repositorioPeriodoDeAcesso.existePeriodoVigente();
+        if (!periodoVigente) {
+            System.out.println("Fora do período de acesso vigente. Não é possível adicionar eBooks à estante.");
+            pausa();
+            return;
+        }
+
+        if (aluno.getEstante().contem(ebook)) {
+            System.out.println("Este eBook já está na sua estante.");
+            pausa();
+            return;
+        }
+
+        if (aluno.getEstante().vagasRestantes(ebook.getTipo()) <= 0) {
+            int limite = ebook.getTipo() == ETipo.OBRIGATORIO ? Estante.OBRIGATORIOS : Estante.LIVRES;
+            System.out.println("Limite de " + limite + " eBooks de leitura " + ebook.getTipo() + " atingido.");
+            pausa();
+            return;
+        }
+
+        if (repositorioEstantes.adicionar(aluno, ebook, periodoVigente)) {
+            System.out.println("eBook adicionado à estante com sucesso.");
+        } else {
+            System.out.println("Não foi possível adicionar o eBook à estante.");
         }
 
         pausa();

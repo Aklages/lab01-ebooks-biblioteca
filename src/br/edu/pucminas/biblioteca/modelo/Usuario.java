@@ -16,6 +16,10 @@ public abstract class Usuario {
         return perfil;
     }
 
+    public String getMatricula(){
+        return matricula;
+    }
+
     // HU01
     public boolean login(String senha) {
         return this.senha.equals(senha);

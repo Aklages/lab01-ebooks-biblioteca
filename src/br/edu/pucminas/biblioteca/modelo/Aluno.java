@@ -1,14 +1,20 @@
 package br.edu.pucminas.biblioteca.modelo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public class Aluno extends Usuario {
 
-    private Estante estante;
+    private final Estante estante = new Estante();
+    private final SistemaDeEstatisticas sistemaDeEstatisticas = new SistemaDeEstatisticas();
 
     public Aluno(String matricula, String senha){
         super(matricula, senha, EPerfil.Aluno);
+    }
+
+    public Estante getEstante() {
+        return estante;
     }
 
     // HU08
@@ -18,9 +24,17 @@ public class Aluno extends Usuario {
     }
 
     // HU10
-    public boolean adicionarEbookEstante(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+    public boolean adicionarEbookEstante(Ebook ebook, boolean periodoDeAcessoVigente) {
+        if (!periodoDeAcessoVigente) {
+            return false;
+        }
+
+        boolean adicionado = estante.add(ebook);
+        if (adicionado) {
+            sistemaDeEstatisticas.notificar(ebook, this, LocalDateTime.now());
+        }
+
+        return adicionado;
     }
 
     // HU11

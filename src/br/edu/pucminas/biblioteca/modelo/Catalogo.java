@@ -76,6 +76,13 @@ public class Catalogo {
         return ebooks;
     }
 
+    public Ebook buscarPorTitulo(String titulo) {
+        return ebooks.stream()
+                .filter(ebook -> ebook.getTitulo().equals(titulo))
+                .findFirst()
+                .orElse(null);
+    }
+
     // HU08
     public List<Ebook> consultarCatalogo(ECategoria categoriaFiltro, String tituloBusca) {
         return ebooks.stream()
