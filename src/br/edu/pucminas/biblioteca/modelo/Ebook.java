@@ -15,6 +15,38 @@ public class Ebook {
     private LocalDate dataInicioLicenca;
     private LocalDate dataFimLicenca;
 
+    public Ebook(String titulo, ECategoria categoria, Editora editora, ETipo tipo, EFormato formato,
+            LocalDate dataInicioLicenca, LocalDate dataFimLicenca) {
+        this.titulo = titulo;
+        this.categoria = categoria;
+        this.editora = editora;
+        this.tipo = tipo;
+        this.formato = formato;
+        this.dataInicioLicenca = dataInicioLicenca;
+        this.dataFimLicenca = dataFimLicenca;
+        this.acessosAtivos = 0;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public ECategoria getCategoria() {
+        return categoria;
+    }
+
+    public Editora getEditora() {
+        return editora;
+    }
+
+    public ETipo getTipo() {
+        return tipo;
+    }
+
+    public EFormato getFormato() {
+        return formato;
+    }
+
     // HU08
     public boolean licencaVigente() {
         // TODO: implementar na Sprint 3

@@ -1,20 +1,27 @@
 package br.edu.pucminas.biblioteca;
 
+import br.edu.pucminas.biblioteca.modelo.Catalogo;
+import br.edu.pucminas.biblioteca.modelo.ECategoria;
+import br.edu.pucminas.biblioteca.modelo.EFormato;
 import br.edu.pucminas.biblioteca.modelo.EPerfil;
-import br.edu.pucminas.biblioteca.modelo.Ebook;
+import br.edu.pucminas.biblioteca.modelo.ETipo;
 import br.edu.pucminas.biblioteca.modelo.Editora;
 import br.edu.pucminas.biblioteca.modelo.PeriodoDeAcesso;
+import br.edu.pucminas.biblioteca.modelo.RepositorioEditoras;
 import br.edu.pucminas.biblioteca.modelo.RepositorioUsuarios;
 import br.edu.pucminas.biblioteca.modelo.Usuario;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
 public class MenuPrincipal {
     static RepositorioUsuarios repositorioUsuarios = new RepositorioUsuarios("data\\usuarios.csv");
+    static RepositorioEditoras repositorioEditoras = new RepositorioEditoras("data\\editoras.csv");
 
-    static List<Editora> editoras = new LinkedList<>();
-    static List<Ebook> ebooks = new LinkedList<>();
+    static Catalogo catalogo = new Catalogo();
     static List<PeriodoDeAcesso> periodos = new LinkedList<>();
 
     static Usuario usuarioLogado;
@@ -44,6 +51,15 @@ public class MenuPrincipal {
         return teclado.nextLine();
     }
 
+    static LocalDate lerData(String mensagem) {
+        System.out.print(mensagem + " (dd/MM/yyyy): ");
+        try {
+            return LocalDate.parse(teclado.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
     static void limparTela() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -61,6 +77,7 @@ public class MenuPrincipal {
 
     static void config(){
         repositorioUsuarios.carregar();
+        repositorioEditoras.carregar();
     }
 
     static int exibirMenuPrincipal(){
@@ -203,7 +220,7 @@ public class MenuPrincipal {
             case EPerfil.EquipeDaBiblioteca -> {
                 switch (opcao) {
                     case 1 -> cadastrarUsuario();
-                    case 2 -> System.out.println("TODO: Cadastrar Ebook");
+                    case 2 -> cadastrarEbook();
                     case 3 -> System.out.println("TODO: Cadastrar Editora");
                     case 4 -> System.out.println("TODO: Renovar Licença do Ebook");
                     case 5 -> System.out.println("TODO: Cadastrar Periodo de Acesso");
@@ -242,6 +259,57 @@ public class MenuPrincipal {
         switch (perfil) {
             case EPerfil.Aluno -> repositorioUsuarios.cadastrarAluno(matricula, senha);
             case EPerfil.Bibliotecario -> repositorioUsuarios.cadastrarBibliotecario(matricula, senha);
+        }
+    }
+
+    static void cadastrarEbook(){
+        cabecalho();
+
+        String titulo = lerString("Titulo");
+
+        String nomeEditora = lerString("Editora");
+        Editora editora = repositorioEditoras.buscar(nomeEditora);
+        if (editora == null) {
+            System.out.println("Editora não cadastrada.");
+            return;
+        }
+
+        int opcaoFormato = -1;
+        while (opcaoFormato < 1 || opcaoFormato > 2) {
+            System.out.println("1 - PDF");
+            System.out.println("2 - EPUB");
+            opcaoFormato = lerInteiro("Formato");
+        }
+        EFormato formato = opcaoFormato == 1 ? EFormato.PDF : EFormato.EPUB;
+
+        int opcaoCategoria = -1;
+        while (opcaoCategoria < 1 || opcaoCategoria > 3) {
+            System.out.println("1 - Literatura");
+            System.out.println("2 - Tecnico");
+            System.out.println("3 - Periodico");
+            opcaoCategoria = lerInteiro("Categoria");
+        }
+        ECategoria categoria = switch (opcaoCategoria) {
+            case 1 -> ECategoria.literatura;
+            case 2 -> ECategoria.tecnico;
+            default -> ECategoria.periodico;
+        };
+
+        int opcaoTipo = -1;
+        while (opcaoTipo < 1 || opcaoTipo > 2) {
+            System.out.println("1 - Obrigatoria");
+            System.out.println("2 - Livre");
+            opcaoTipo = lerInteiro("Tipo de leitura");
+        }
+        ETipo tipo = opcaoTipo == 1 ? ETipo.OBRIGATORIO : ETipo.LIVRE;
+
+        LocalDate dataInicio = lerData("Data de inicio da licenca");
+        LocalDate dataFim = lerData("Data de fim da licenca");
+
+        if (catalogo.cadastrarEbook(titulo, editora, formato, categoria, tipo, dataInicio, dataFim)) {
+            System.out.println("Ebook cadastrado com sucesso.");
+        } else {
+            System.out.println("Não foi possível cadastrar o eBook. Verifique os dados informados.");
         }
     }
 
