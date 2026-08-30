@@ -30,7 +30,6 @@ class Bibliotecario {
 }
 
 class EquipeDaBiblioteca {
-  + cadastrarCategoria() : boolean
   + cadastrarPeriodoDeAcesso() : boolean
   + renovarLicenca() : boolean
   + cadastrarEbook() : boolean
@@ -45,7 +44,7 @@ Usuario <|-- EquipeDaBiblioteca
 ' ============================== ACERVO =================================
 class Ebook {
   - titulo : String
-  - categoria : Categoria
+  - categoria : ECategoria
   - editora : Editora
   - tipo : ETipo
   - formato : EFormato
@@ -68,18 +67,20 @@ enum EFormato {
   EPUB
 }
 
-class Categoria {
-  - nome : String
+enum ECategoria {
+  literatura
+  tecnico
+  periodico
 }
 
 class Editora {
   - nome : String
 }
 
-Ebook "*" -- "1" Categoria
 Ebook "*" -- "1" Editora
 Ebook -- ETipo
 Ebook -- EFormato
+Ebook -- ECategoria
 
 ' ========================== PERIODO DE ACESSO ===========================
 class PeriodoDeAcesso {
@@ -96,11 +97,10 @@ class Estante {
   + add() : boolean
   + remove() : boolean
   + vagasRestantes(tipo) : int
-  + toString() : String
 }
 
 Aluno "1" -- "1" Estante
-Estante "1" o-- "*" Ebook : ebooks
+Estante "1" -- "*" Ebook : ebooks
 Estante ..> PeriodoDeAcesso : valida vigencia
 
 ' ============================== CATALOGO =================================

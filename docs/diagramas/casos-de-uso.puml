@@ -24,7 +24,6 @@ rectangle "Sistema de Gestão de eBooks" {
   usecase "Cadastrar eBook - UC02" as UC02
   usecase "Cadastrar usuário - UC03" as UC03
   usecase "Cadastrar editora - UC04" as UC04
-  usecase "Cadastrar categoria - UC05" as UC05
   usecase "Cadastrar período de acesso - UC06" as UC06
   usecase "Renovar licença do eBook - UC07" as UC07
 
@@ -60,7 +59,6 @@ Usuario --> UC01
 Equipe --> UC02
 Equipe --> UC03
 Equipe --> UC04
-Equipe --> UC05
 Equipe --> UC06
 Equipe --> UC07
 
