@@ -78,8 +78,8 @@ public class Ebook {
         }
     }
 
-    public LocalDate getDataFimLicenca() {
-        return dataFimLicenca;
+    // HU07
+    public void renovarLicenca(LocalDate novaDataFimLicenca) {
+        this.dataFimLicenca = novaDataFimLicenca;
     }
-    
 }

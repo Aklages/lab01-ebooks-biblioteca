@@ -31,4 +31,13 @@ public class PeriodoDeAcesso {
         LocalDate hoje = LocalDate.now();
         return !hoje.isBefore(dataInicio) && !hoje.isAfter(dataFim);
     }
+
+    // HU06
+    public boolean sobrepoe(String outroSemestre, LocalDate outraDataInicio, LocalDate outraDataFim) {
+        if (!semestre.equals(outroSemestre)) {
+            return false;
+        }
+
+        return !outraDataInicio.isAfter(dataFim) && !dataInicio.isAfter(outraDataFim);
+    }
 }

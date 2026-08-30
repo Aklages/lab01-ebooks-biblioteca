@@ -33,8 +33,7 @@ public class Estante {
 
     // HU11
     public boolean remove(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+        return ebook != null && ebooks.remove(ebook);
     }
 
     // HU11

@@ -1,9 +1,11 @@
 package br.edu.pucminas.biblioteca.modelo;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 
 public class EquipeDaBiblioteca extends Usuario {
+
+    public static final int MINIMO_ALUNOS_RENOVACAO = 3;
 
     public EquipeDaBiblioteca(String matricula, String senha){
         super(matricula, senha, EPerfil.EquipeDaBiblioteca);
@@ -22,37 +24,43 @@ public class EquipeDaBiblioteca extends Usuario {
 
 
     // HU04
-    public boolean cadastrarEditora(String nome, List<Editora> editorasCadastradas) {
-        if (nome == null || nome.isEmpty()) {
-            throw new IllegalArgumentException("O nome da editora não pode ser nulo ou vazio.");
-        } else if (editorasCadastradas.stream().anyMatch(e -> e.getNome().equals(nome))) {
-            throw new IllegalArgumentException("A editora já está cadastrada.");
+    public boolean cadastrarEditora(String nome, RepositorioEditoras repositorioEditoras) {
+        if (repositorioEditoras == null) {
+            return false;
         }
-        return true;
-       
+
+        return repositorioEditoras.cadastrar(nome);
     }
 
     // HU06
-    public boolean cadastrarPeriodoDeAcesso(String semestre, LocalDate dataInicio, LocalDate dataFim) {
-        if (semestre == null || semestre.isEmpty()) {
-            throw new IllegalArgumentException("O semestre não pode ser nulo ou vazio.");
-        } else if (dataInicio == null || dataFim == null) {
-            throw new IllegalArgumentException("As datas de início e fim não podem ser nulas.");
-        } else if (dataInicio.isAfter(dataFim)) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data de fim.");
+    public boolean cadastrarPeriodoDeAcesso(String semestre, LocalDate dataInicio, LocalDate dataFim, RepositorioPeriodoDeAcesso repositorioPeriodoDeAcesso) {
+        if (repositorioPeriodoDeAcesso == null) {
+            return false;
         }
+
+        return repositorioPeriodoDeAcesso.cadastrar(semestre, dataInicio, dataFim);
+    }
+
+    // HU07
+    public boolean renovarLicenca(Ebook ebook, LocalDate novaDataFimLicenca, Collection<Aluno> alunos, RepositorioPeriodoDeAcesso repositorioPeriodoDeAcesso) {
+        if (ebook == null
+                || novaDataFimLicenca == null
+                || alunos == null
+                || repositorioPeriodoDeAcesso == null
+                || repositorioPeriodoDeAcesso.existePeriodoVigente()
+                || !novaDataFimLicenca.isAfter(ebook.getDataFimLicenca())
+                || contarAlunosComEbook(ebook, alunos) < MINIMO_ALUNOS_RENOVACAO) {
+            return false;
+        }
+
+        ebook.renovarLicenca(novaDataFimLicenca);
         return true;
     }
 
     // HU07
-    public boolean renovarLicenca(Ebook ebook, LocalDate novaDataFimLicenca) {
-        if (ebook == null) {
-            throw new IllegalArgumentException("O ebook não pode ser nulo.");
-        } else if (novaDataFimLicenca == null) {
-            throw new IllegalArgumentException("A nova data de fim de licença não pode ser nula.");
-        } else if (novaDataFimLicenca.isBefore(ebook.getDataFimLicenca())) {
-            throw new IllegalArgumentException("A nova data de fim de licença não pode ser anterior à data de fim de licença atual.");
-        }
-        return true;
+    public int contarAlunosComEbook(Ebook ebook, Collection<Aluno> alunos) {
+        return (int) alunos.stream()
+                .filter(aluno -> aluno.getEstante().contem(ebook))
+                .count();
     }
 }

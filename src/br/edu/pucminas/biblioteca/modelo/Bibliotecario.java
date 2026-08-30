@@ -15,10 +15,13 @@ public class Bibliotecario extends Usuario {
     }
 
     // HU09
-    public List<Aluno> consultarAlunosComEbook(Ebook ebook) {
-        Collection<Aluno> consultarAlunos = null;
-        return consultarAlunos.stream()
-                .filter(aluno -> aluno.getEstante().getEbooks().contains(ebook))
+    public List<Aluno> consultarAlunosComEbook(Ebook ebook, Collection<Aluno> alunos) {
+        if (ebook == null || alunos == null) {
+            return List.of();
+        }
+
+        return alunos.stream()
+                .filter(aluno -> aluno.getEstante().contem(ebook))
                 .toList();
     }
 }

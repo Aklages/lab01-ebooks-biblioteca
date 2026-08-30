@@ -31,16 +31,23 @@ public class Aluno extends Usuario {
 
         boolean adicionado = estante.add(ebook);
         if (adicionado) {
-            sistemaDeEstatisticas.notificar(ebook, this, LocalDateTime.now());
+            try {
+                sistemaDeEstatisticas.notificar(ebook, this, LocalDateTime.now());
+            } catch (RuntimeException e) {
+                System.err.println("Falha ao notificar o sistema de estatisticas: " + e.getMessage());
+            }
         }
 
         return adicionado;
     }
 
     // HU11
-    public boolean removerEbookEstante(Ebook ebook) {
-        // TODO: implementar na Sprint 3
-        return false;
+    public boolean removerEbookEstante(Ebook ebook, boolean periodoDeAcessoVigente) {
+        if (!periodoDeAcessoVigente) {
+            return false;
+        }
+
+        return estante.remove(ebook);
     }
 
     // HU12
@@ -65,9 +72,4 @@ public class Aluno extends Usuario {
             ebook.liberarLicenca();
         }
     }
-
-    public Estante getEstante() {
-        return estante;
-    }
-    
 }
