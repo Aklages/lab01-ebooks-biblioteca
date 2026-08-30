@@ -18,7 +18,7 @@ public class MenuPrincipal {
     static RepositorioUsuarios repositorioUsuarios = new RepositorioUsuarios("data\\usuarios.csv");
     static RepositorioEditoras repositorioEditoras = new RepositorioEditoras("data\\editoras.csv");
 
-    static Catalogo catalogo = new Catalogo();
+    static Catalogo catalogo = new Catalogo("data\\ebooks.csv", repositorioEditoras);
 
     static Usuario usuarioLogado;
 
@@ -74,6 +74,7 @@ public class MenuPrincipal {
     static void config(){
         repositorioUsuarios.carregar();
         repositorioEditoras.carregar();
+        catalogo.carregar();
     }
 
     static int exibirMenuPrincipal(){

@@ -47,6 +47,14 @@ public class Ebook {
         return formato;
     }
 
+    public LocalDate getDataInicioLicenca() {
+        return dataInicioLicenca;
+    }
+
+    public LocalDate getDataFimLicenca() {
+        return dataFimLicenca;
+    }
+
     // HU08
     public boolean licencaVigente() {
         // TODO: implementar na Sprint 3
