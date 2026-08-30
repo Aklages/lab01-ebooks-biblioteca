@@ -74,89 +74,181 @@ public class MenuPrincipal {
         pessoasEquipeCadastrados = leitorUsuarios.lerEquipe();
     }
 
-    static int exibirMenuPrincipal() {
+    static int exibirMenuPrincipal(){
+        int opcao = -1;
+        
         cabecalho();
-        switch (usuarioLogado.getPerfil()) {
-            case EPerfil.Aluno -> {
-                System.out.println("1 - Consultar Catalógo");
-                System.out.println("2 - Consultar Estante");
-                System.out.println("0 - Deslogar");
-            }
-            case EPerfil.Bibliotecario -> {
-                System.out.println("1 - Consultar Catalógo");
-                System.out.println("2 - Consultar Alunos com Ebook");
-                System.out.println("0 - Deslogar");
-            }
-            case EPerfil.EquipeDaBiblioteca -> {
-                System.out.println("1 - Cadastrar Periodo de Acesso");
-                System.out.println("2 - Renovar Licença do Ebook");
-                System.out.println("3 - Cadastrar Ebook");
-                System.out.println("4 - Cadastrar Usuario");
-                System.out.println("5 - Cadastrar Editora");
-                System.out.println("0 - Deslogar");
-            }   
+        while(opcao < 0 || opcao > 1){
+            System.out.println("1 - Realizar login");
+            System.out.println("0 - Encerrar sistema");
+            opcao = lerInteiro("Digite sua escolha");
         }
-        return lerInteiro("Digite sua escolha");
+
+        return opcao;
     }
 
-    static boolean realizarLogin() {
-        boolean loginOuSenhaEhInvalido = true;
-        boolean encerrar = false;
-        int opcaoPerfil;
-        EPerfil tipoPerfil = EPerfil.Aluno;
-        String login;
-        String senha;
-        Usuario encontrado = null;
+    static int menuOpcoesPerfil(){
+        int opcao = -1;
 
         cabecalho();
-        while(loginOuSenhaEhInvalido && !encerrar){
+        while (opcao < 0 || opcao > 3) { 
             System.out.println("Escolha o tipo de perfil que deseja logar: ");
             System.out.println("1 - Aluno");
             System.out.println("2 - Bibliotecario");
             System.out.println("3 - Equipe da bliblioteca");
-            System.out.println("0 - Encerrar");
-            opcaoPerfil = lerInteiro("Opcao");
-            switch (opcaoPerfil) {
-                case 1 -> tipoPerfil = EPerfil.Aluno;
-                case 2 -> tipoPerfil = EPerfil.Bibliotecario;
-                case 3 -> tipoPerfil = EPerfil.EquipeDaBiblioteca;
-                case 0 -> encerrar = true;
+            System.out.println("0 - Voltar");
+            opcao = lerInteiro("Opcao");
+        }
+
+        return opcao;
+    }
+
+    static EPerfil mapearIdentificadorParaPerfil(int opcao){
+        EPerfil perfilMapeado = null;
+        
+        switch (opcao) {
+            case 1 -> perfilMapeado = EPerfil.Aluno;
+            case 2 -> perfilMapeado = EPerfil.Bibliotecario;
+            case 3 -> perfilMapeado = EPerfil.EquipeDaBiblioteca;
+        }
+
+        if(perfilMapeado == null)
+            throw new IllegalArgumentException("Opção de perfil inválida, não foi possivel mapear.");
+
+        return perfilMapeado;
+    }
+
+    //Realiza login do usuario, tornando o usuario como variavel global para facilidade de uso
+    static boolean realizarLogin() {
+        boolean desejaLogar = true;
+
+        int opcao;
+        EPerfil tipoPerfil;
+
+        String login;
+        String senha;
+
+        Usuario encontrado = null;
+
+        while(desejaLogar){
+            opcao = menuOpcoesPerfil();
+
+            // Opcao 0 significa que o usuario deseja voltar ao menu principal
+            if(opcao == 0){
+                desejaLogar = false;
+                break;
             }
-            if(!encerrar){
-                login = lerString("Login");
-                senha = lerString("Senha");
-                switch (tipoPerfil) {
-                    case EPerfil.Aluno -> encontrado = alunosCadastradosMap.get(login);
-                    case EPerfil.Bibliotecario -> encontrado = bibliotecariosCadastrados.get(login);
-                    case EPerfil.EquipeDaBiblioteca -> encontrado = pessoasEquipeCadastrados.get(login);
-                }
-                if(encontrado == null || !encontrado.login(senha)){
-                    System.out.print("Usuario ou Senha incorreto. Tente novamente\n\n");
-                }
-                else{
-                    usuarioLogado = encontrado;
-                    loginOuSenhaEhInvalido = false;
-                }
+
+            try {
+                tipoPerfil = mapearIdentificadorParaPerfil(opcao);                
+            } catch (Exception ile) {
+                System.out.println("Opção de perfil inválida.");
+                break;
+            }
+
+            login = lerString("Login");
+            senha = lerString("Senha");
+            
+            switch (tipoPerfil) {
+                case EPerfil.Aluno -> encontrado = alunosCadastradosMap.get(login);
+                case EPerfil.Bibliotecario -> encontrado = bibliotecariosCadastrados.get(login);
+                case EPerfil.EquipeDaBiblioteca -> encontrado = pessoasEquipeCadastrados.get(login);
+            }
+
+            if(encontrado == null || !encontrado.login(senha)){
+                System.out.print("Usuario ou Senha incorreto. Tente novamente\n\n");
+            }
+            else{
+                usuarioLogado = encontrado;
+                break;
             }
         }
 
-        return !encerrar;
+        return desejaLogar;
+    }
+
+    static int exibirMenuLogado() {
+        int opcao = -1;
+        int numOpcoes = 0;
+
+        cabecalho();
+        while (opcao < 0 || opcao > numOpcoes) {
+            switch (usuarioLogado.getPerfil()) {
+                case EPerfil.Aluno -> {
+                    System.out.println("1 - Consultar Catalógo");
+                    System.out.println("2 - Consultar Estante");
+                    System.out.println("0 - Deslogar");
+                    numOpcoes = 2;
+                }
+                case EPerfil.Bibliotecario -> {
+                    System.out.println("1 - Consultar Catalógo");
+                    System.out.println("2 - Consultar Alunos com Ebook");
+                    System.out.println("0 - Deslogar");
+                    numOpcoes = 2;
+                }
+                case EPerfil.EquipeDaBiblioteca -> {
+                    System.out.println("1 - Cadastrar Usuario");
+                    System.out.println("2 - Cadastrar Ebook");
+                    System.out.println("3 - Cadastrar Editora");
+                    System.out.println("4 - Renovar Licença do Ebook");
+                    System.out.println("5 - Cadastrar Periodo de Acesso");
+                    System.out.println("0 - Deslogar");
+                    numOpcoes = 5;
+                }
+            }
+            opcao = lerInteiro("Digite sua escolha");
+        }
+        return opcao;
+    }
+
+    static void realizarOperacaoEscolhida(int opcao){
+        switch (usuarioLogado.getPerfil()) {
+            case EPerfil.Aluno -> {
+                switch (opcao) {
+                    case 1 -> System.out.print("TODO: Consultar Catalógo");
+                    case 2 -> System.out.print("TODO: Consultar Estante");
+                }
+            }
+            case EPerfil.Bibliotecario -> {
+                switch (opcao) {
+                    case 1 -> System.out.print("TODO: Consultar Catalógo");
+                    case 2 -> System.out.print("TODO: Consultar Alunos com Ebook");
+                }
+            }
+            case EPerfil.EquipeDaBiblioteca -> {
+                switch (opcao) {
+                    case 1 -> System.out.println("TODO: Cadastrar Usuario");
+                    case 2 -> System.out.println("TODO: Cadastrar Ebook");
+                    case 3 -> System.out.println("TODO: Cadastrar Editora");
+                    case 4 -> System.out.println("TODO: Renovar Licença do Ebook");
+                    case 5 -> System.out.println("TODO: Cadastrar Periodo de Acesso");
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
-        
-        boolean continuar = true;
-        int opcao = 1;
-
         config();
+        
+        boolean usuarioDesejaContinuar = true;
+        boolean usuarioEstahLogado = false;
+        int opcao;
 
-        while(continuar){
-            continuar = realizarLogin();
-            while(opcao != 0 && continuar){
-                opcao = exibirMenuPrincipal();
+        while(usuarioDesejaContinuar){
+            opcao = exibirMenuPrincipal();
+            switch (opcao) {
+                case 1 -> usuarioEstahLogado = realizarLogin();
+                case 0 -> usuarioDesejaContinuar = false;
             }
-            opcao = 1;
+            if(usuarioEstahLogado){
+                opcao = -1;
+                while(opcao != 0){
+                    opcao = exibirMenuLogado();
+                    realizarOperacaoEscolhida(opcao);
+                }
+                usuarioEstahLogado = false;
+            }
         }
     }
 }
